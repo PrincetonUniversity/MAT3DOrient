@@ -1495,7 +1495,7 @@ classdef CramerRaoFunctions
         end
         
         function [CramerRaoMTheta, CramerRaoMPhi] = CramerRaoScatterOOI(obj, time, thetas, phis, I, Beta,...
-                wavelengths, T, cv, NAObj, NACond, a11, a13, a33, n_detectors, thetadepf)
+                wavelengths, T, cv, NAObj, NACond, a11, a13, a33, n_detectors, thetadepf, A, B, C, H)
             % time is time taken to observe photons
             % Beta is SBR = (Intensity + Background )/ Background (can be
             % wavelength dependent), should be n_detector x wavelength
@@ -1513,8 +1513,10 @@ classdef CramerRaoFunctions
             % intensity would average to I
             CramerRaoMTheta = zeros(length(thetas), length(phis));
             CramerRaoMPhi = zeros(length(thetas), length(phis));
-            n0 = obj.n_m(wavelengths, T, cv);
-            [~, ~, A, B, C, H] = obj.InstrResp(NACond, NAObj, n0);
+            if nargin < 20
+                n0 = obj.n_m(wavelengths, T, cv);
+                [~, ~, A, B, C, H] = obj.InstrResp(NACond, NAObj, n0);
+            end
             for i = 1:length(thetas)
                 NF = obj.NormFactor(thetas(i), a11, a13, a33, A, B, H);
                 if nargin>=16
@@ -1648,7 +1650,7 @@ classdef CramerRaoFunctions
         end
         
         function [CramerRaoMTheta, CramerRaoMPhi] = CramerRaoScatterNBOOI(obj, time, thetas, phis, I,...
-                wavelengths, T, cv, NAObj, NACond, a11, a13, a33, n_detectors, thetadepf)
+                wavelengths, T, cv, NAObj, NACond, a11, a13, a33, n_detectors, thetadepf, A, B, C, H)
             % CRLB for no-background case
             % time is time taken to observe photons
             % I is Intensity (can be wavelength dependent),
@@ -1664,8 +1666,10 @@ classdef CramerRaoFunctions
             % intensity would average to I            
             CramerRaoMTheta = zeros(length(thetas), length(phis));
             CramerRaoMPhi = zeros(length(thetas), length(phis));
-            n0 = obj.n_m(wavelengths, T, cv);
-            [~, ~, A, B, C, H] = obj.InstrResp(NACond, NAObj, n0);
+            if nargin < 19
+                n0 = obj.n_m(wavelengths, T, cv);
+                [~, ~, A, B, C, H] = obj.InstrResp(NACond, NAObj, n0);
+            end
             for i = 1:length(thetas)
                 NF = obj.NormFactor(thetas(i), a11, a13, a33, A, B, H);
                 if nargin>=15
@@ -1723,7 +1727,7 @@ classdef CramerRaoFunctions
         end
         
         function [CramerRaoMTheta, CramerRaoMPhi] = CramerRaoFluoNBOTI(obj, time, thetas, phis, I,...
-                 wavelengths, T, cv, NAObj, n_detectors, thetadepf)
+                 wavelengths, T, cv, NAObj, n_detectors, thetadepf, A, B, C)
             % CRLB for non-background case
             % time is time taken to observe photons
             % I is Intensity (can be wavelength dependent),
@@ -1737,8 +1741,10 @@ classdef CramerRaoFunctions
             % intensity would average to I (computed separately)
             CramerRaoMTheta = zeros(length(thetas), length(phis));
             CramerRaoMPhi = zeros(length(thetas), length(phis));
-            n0 = obj.n_m(wavelengths, T, cv);
-            [~, ~, A, B, C, ~] = obj.InstrResp(1, NAObj, n0);
+            if nargin < 14
+                n0 = obj.n_m(wavelengths, T, cv);
+                [~, ~, A, B, C, ~] = obj.InstrResp(1, NAObj, n0);
+            end
             for i = 1:length(thetas)
                 if nargin>=11
                     Ival = I.*thetadepf(thetas(i));
@@ -1797,7 +1803,7 @@ classdef CramerRaoFunctions
         end
 
         function [CramerRaoMTheta, CramerRaoMPhi] = CramerRaoFluoOTI(obj, time, thetas, phis, I, Beta,...
-                 wavelengths, T, cv, NAObj, n_detectors, thetadepf)
+                 wavelengths, T, cv, NAObj, n_detectors, thetadepf, A, B, C)
             % time is time taken to observe photons
             % Beta is SBR = (Intensity + Background )/ Background (can be
             % wavelength dependent), should be n_detector x wavelength
@@ -1813,8 +1819,10 @@ classdef CramerRaoFunctions
             % intensity would average to I (computed separately)
             CramerRaoMTheta = zeros(length(thetas), length(phis));
             CramerRaoMPhi = zeros(length(thetas), length(phis));
-            n0 = obj.n_m(wavelengths, T, cv);
-            [~, ~, A, B, C, ~] = obj.InstrResp(1, NAObj, n0);
+            if nargin < 15
+                n0 = obj.n_m(wavelengths, T, cv);
+                [~, ~, A, B, C, ~] = obj.InstrResp(1, NAObj, n0);
+            end
             for i = 1:length(thetas)
                 if nargin>=12
                     Ival = I.*thetadepf(thetas(i));
